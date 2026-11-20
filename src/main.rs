@@ -2,9 +2,10 @@
 //! which output files differ and which embedded strings cause the difference.
 //!
 //! Usage:
-//!   repro-check <crate-dir> [--remap] [--keep]
+//!   repro-check <crate-dir> [--remap] [--brepro] [--keep]
 //!
 //! --remap  also pass RUSTFLAGS=--remap-path-prefix=<build dir>=/build to test the usual fix
+//! --brepro also pass -C link-arg=/Brepro (MSVC linker: deterministic timestamp/signature)
 //! --keep   keep the temporary build directories
 
 use std::collections::{BTreeMap, BTreeSet};
@@ -121,7 +122,7 @@ fn classify(s: &str, a: &Path, b: &Path) -> &'static str {
 fn main() -> io::Result<()> {
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
-        eprintln!("usage: repro-check <crate-dir> [--remap] [--keep]");
+        eprintln!("usage: repro-check <crate-dir> [--remap] [--brepro] [--keep]");
         std::process::exit(2);
     }
     let src = fs::canonicalize(&args[1])?;
